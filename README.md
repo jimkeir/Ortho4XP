@@ -64,6 +64,7 @@ The specific changes in this forked version:
 * Fixed a bug with random OSM server selection not working correctly.
 * Include recompiled version of Triangle4XP.exe with MinGW-GCC for Windows users to resolve an [issue](https://github.com/oscarpilote/Ortho4XP/issues/282).
 * Fixed a bug when using manually installed dem files were not being used on certain tiles.
+* Work around for certain tiles (+30-085) with complex meshes that fail to build.
 
 
 ## Installation
