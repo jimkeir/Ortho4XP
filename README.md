@@ -49,6 +49,7 @@ The specific changes in this forked version:
 * Include 7-zip executable for macOS.
 * Update EOX url template and deleted the broken EOX2.lay file. @A346fan
 * Update nvcompress to macOS universal binary. @w8sl
+* Update DFSTool to latest version 24-5.
 * Removed unused tools.
 
 #### Bug Fixes
