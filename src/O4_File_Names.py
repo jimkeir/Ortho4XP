@@ -64,8 +64,6 @@ def hem_latlon(lat, lon):
 
 
 ##############################################################################
-
-
 def tile_dir(lat, lon):
     return "zOrtho4XP_" + short_latlon(lat, lon)
 
@@ -73,7 +71,7 @@ def tile_dir(lat, lon):
 def build_dir(lat, lon, custom_build_dir):
     if not custom_build_dir:
         return os.path.join(Tile_dir, tile_dir(lat, lon))
-    elif custom_build_dir.endswith(os.sep):
+    elif custom_build_dir.endswith(("/", "\\")):
         return os.path.join(custom_build_dir[:-1], tile_dir(lat, lon))
     else:
         return custom_build_dir

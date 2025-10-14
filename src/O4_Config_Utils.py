@@ -134,6 +134,7 @@ except FileNotFoundError:
 except Exception as e:
     _LOGGER.error("Error accessing global config file: %s", e)
 
+
 ################################################################################
 class Tile:
     """Class for building tiles."""
@@ -144,7 +145,7 @@ class Tile:
         self.custom_build_dir = custom_build_dir
         self.grouped = (
             True
-            if (custom_build_dir and not custom_build_dir.endswith(os.sep))
+            if custom_build_dir and not custom_build_dir.endswith(("/", "\\"))
             else False
         )
         self.build_dir = FNAMES.build_dir(lat, lon, custom_build_dir)
@@ -224,7 +225,7 @@ class Tile:
                         )
                     exec(cmd)
                 except Exception as e:
-                    # compatibility with zone_list config files from 
+                    # compatibility with zone_list config files from
                     # version <= 1.20
                     if "zone_list.append" in line:
                         try:
