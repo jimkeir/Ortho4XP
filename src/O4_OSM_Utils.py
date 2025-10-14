@@ -12,7 +12,8 @@ import O4_File_Names as FNAMES
 overpass_servers = {
     "DE": "https://overpass-api.de/api/interpreter",
     "KU": "https://overpass.private.coffee/api/interpreter",
-    "RU": "https://overpass.openstreetmap.ru/api/interpreter",
+    "RU1": "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+    "RU2": "https://overpass.openstreetmap.ru/api/interpreter",
     "JP": "https://overpass.osm.jp/api/interpreter"
 }
 # KU server does not rate limit as of 2024-07-08
