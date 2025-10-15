@@ -663,8 +663,8 @@ def build_mesh(tile):
     # Hack
     # Better meshes by not modifying curv_tol but having limit_tris set
     # tu a reasonable value.
-    #curv_tol_scaling = sqrt(tile.dem.nxdem / (3601 * (tile.dem.x1 - tile.dem.x0))
-    #)
+    # curv_tol_scaling = sqrt(tile.dem.nxdem / (3601 * (tile.dem.x1 - tile.dem.x0))
+    # )
 
     mesh_cmd = [
         Triangle4XP_cmd.strip(),
@@ -706,14 +706,22 @@ def build_mesh(tile):
         UI.vprint(
             0,
             "\nWARNING: Triangle4XP could not achieve the requested quality ",
-            "(min_angle), most probably due to an uncatched OSM error.\n",
-            "It will be tempted now with no angle constraint ",
+            "(min_angle) most likely due to an uncatched OSM error.\n",
+            "It will be attempted now with no angle constraint ",
             "(i.e. min_angle=0).",
         )
-        mesh_cmd[-5] = "{:.9g}".format(0)
-        fingers_crossed = subprocess.Popen(
-            mesh_cmd, stdout=subprocess.PIPE, bufsize=0
+        Tri_option = (
+            "-pq"
+            + "{:.9g}".format(0)
+            + do_refine
+            + "uYB"
+            + tri_verbosity
+            + output_poly
+            + limit_tris
         )
+        mesh_cmd[1] = Tri_option
+        UI.vprint(2, "   Mesh command:", " ".join(mesh_cmd))
+        fingers_crossed = subprocess.Popen(mesh_cmd, stdout=subprocess.PIPE, bufsize=0)
         while True:
             line = fingers_crossed.stdout.readline()
             if not line:
@@ -895,4 +903,3 @@ def read_mesh_file(mesh_file):
 
     return (mesh_version, nbr_nodes, node_coords, nbr_tris, tri_idx, tri_types)
 ##############################################################################
-
