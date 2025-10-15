@@ -2026,13 +2026,13 @@ class Ortho4XP_Earth_Preview(tk.Toplevel):
     def delete_tile_whole(self, lat: int, lon: int) -> None:
         """Delete all tile data."""
         try:
-            self.remove_symlink(lat, lon)
             shutil.rmtree(FNAMES.build_dir(lat, lon, self.custom_build_dir))
             UI.vprint(
                 3,
                 "Tile (whole) removed for tile at " + str(lat) + str(lon),
             )
             if (lat, lon) in self.dico_tiles_done:
+                self.remove_symlink(lat, lon)
                 for objid in self.dico_tiles_done[(lat, lon)][:2]:
                     self.canvas.delete(objid)
                 del self.dico_tiles_done[(lat, lon)]
