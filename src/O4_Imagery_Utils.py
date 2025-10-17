@@ -1,22 +1,25 @@
-from O4_Parallel_Utils import parallel_execute
-import O4_Mask_Utils as MASK
-import O4_OSM_Utils as OSM
-import O4_Mesh_Utils as MESH
-import O4_Vector_Utils as VECT
-import O4_File_Names as FNAMES
-import O4_Geo_Utils as GEO
-import O4_UI_Utils as UI
-import time
-import os
-import sys
-import subprocess
 import io
-import requests
+import os
 import queue
 import random
-from math import ceil, log, tan, pi
+import subprocess
+import sys
+import time
+from math import ceil, log, pi, tan
+from pathlib import Path
+
 import numpy
-from PIL import Image, ImageFilter, ImageEnhance, ImageOps
+from PIL import Image, ImageEnhance, ImageFilter, ImageOps
+import requests
+
+import O4_File_Names as FNAMES
+import O4_Geo_Utils as GEO
+import O4_Mask_Utils as MASK
+import O4_Mesh_Utils as MESH
+import O4_OSM_Utils as OSM
+import O4_UI_Utils as UI
+import O4_Vector_Utils as VECT
+from O4_Parallel_Utils import parallel_execute
 
 Image.MAX_IMAGE_PIXELS = 1000000000  # Not a decompression bomb attack!
 
@@ -1582,7 +1585,7 @@ def download_jpeg_ortho(
             "could not be obtained ",
             "(even at lower ZL), it was filled with white there.",
         )
-        tile_coords = file_dir.split('/')[-2]
+        tile_coords = Path(file_dir).parent.name
         incomplete_imgs.setdefault(tile_coords, []).append(file_name)
     if not os.path.exists(file_dir):
         os.makedirs(file_dir)
