@@ -1571,6 +1571,12 @@ class Ortho4XP_Earth_Preview(tk.Toplevel):
 
     def add_symlink(self, lat: int, lon: int) -> None:
         """Add symlink to custom_scenery_dir."""
+        custom_scenery_dir = os.path.normpath(CFG.custom_scenery_dir)
+        custom_build_dir = os.path.normpath(self.custom_build_dir)
+        # Check if scenery and build directory are the same (symlinks not applicable)
+        if custom_scenery_dir == custom_build_dir:
+            return
+
         if not self.grouped:
             link = os.path.join(
                 CFG.custom_scenery_dir,
@@ -1614,6 +1620,12 @@ class Ortho4XP_Earth_Preview(tk.Toplevel):
 
     def remove_symlink(self, lat: int, lon: int) -> None:
         """Remove symlink from custom_scenery_dir."""
+        custom_scenery_dir = os.path.normpath(CFG.custom_scenery_dir)
+        custom_build_dir = os.path.normpath(self.custom_build_dir)
+        # Check if scenery and build directory are the same (symlinks not applicable)
+        if custom_scenery_dir == custom_build_dir:
+            return
+
         if not self.grouped:
             link = os.path.join(
                 CFG.custom_scenery_dir,
@@ -1645,7 +1657,7 @@ class Ortho4XP_Earth_Preview(tk.Toplevel):
                 os.path.realpath(link), os.path.realpath(self.working_dir)
             ):
                 os.remove(link)
-                for (lat, lon) in self.dico_tiles_done:
+                for lat, lon in self.dico_tiles_done:
                     if not OsX:
                         self.canvas.itemconfig(
                             self.dico_tiles_done[(lat, lon)][0],
