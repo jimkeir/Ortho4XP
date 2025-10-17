@@ -44,7 +44,6 @@ cfg_app_vars = {
         "module": "TILE",
         "type": int,
         "default": 1,
-        "values": (1, 2, 4, 8, 16, 32, 64, 96),
         "hint": "Number of parallel threads pulling from the download queue. Increase to speed up imagery downloads when your network and provider allow more concurrent requests. If running Ortho4XP from an external drive, errors may occur if set to higher than 4.",
     },
     "max_convert_slots": {
