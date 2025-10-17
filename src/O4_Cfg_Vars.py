@@ -51,7 +51,6 @@ cfg_app_vars = {
         "module": "TILE",
         "type": int,
         "default": 4,
-        "values": (1, 2, 3, 4, 5, 6, 7, 8),
         "hint": "Number of parallel threads for dds conversion. Should be mainly dictated by the number of cores in your CPU.",
     },
     "check_tms_response": {
