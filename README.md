@@ -34,6 +34,7 @@ The specific changes in this forked version:
 * Backup of the tile configuration is created when using the "Save Tile Config" button (previously was only during a tile build process).
 * Default `imprint_mask_to_dds` to `False` to prevent issues with `water_tech=XP12`.
 * Added a new setting `max_download_slots` to support a new feature allowing users to specify number of parallel threads for imagery download. @tlinkin
+* Setting `max_convert_slots` can now be manually specified by the user.
 
 #### Miscellaneous
 * Automatically saves the same data (active tile, default provider, default zoom level and base folder) that the power button icon does when you close the application using the operating system close button.
@@ -68,7 +69,8 @@ The specific changes in this forked version:
 * Include recompiled version of Triangle4XP.exe with MinGW-GCC for Windows users to resolve an [issue](https://github.com/oscarpilote/Ortho4XP/issues/282).
 * Fixed a bug when using manually installed dem files were not being used on certain tiles.
 * Work around for certain tiles (+30-085) with complex meshes that fail to build.
-
+* Fixed and improved automatically trying a lower `min_angle` value when the current value fails.
+* Reverted to previous triangle.exe to fix issues with creation of extent masks and certain providers.
 
 ## Installation
 
