@@ -1571,6 +1571,12 @@ class Ortho4XP_Earth_Preview(tk.Toplevel):
 
     def add_symlink(self, lat: int, lon: int) -> None:
         """Add symlink to custom_scenery_dir."""
+        custom_scenery_dir = os.path.normpath(CFG.custom_scenery_dir)
+        custom_build_dir = os.path.normpath(self.custom_build_dir)
+        # Check if scenery and build directory are the same (symlinks not applicable)
+        if custom_scenery_dir == custom_build_dir:
+            return
+
         if not self.grouped:
             link = os.path.join(
                 CFG.custom_scenery_dir,
@@ -1614,6 +1620,12 @@ class Ortho4XP_Earth_Preview(tk.Toplevel):
 
     def remove_symlink(self, lat: int, lon: int) -> None:
         """Remove symlink from custom_scenery_dir."""
+        custom_scenery_dir = os.path.normpath(CFG.custom_scenery_dir)
+        custom_build_dir = os.path.normpath(self.custom_build_dir)
+        # Check if scenery and build directory are the same (symlinks not applicable)
+        if custom_scenery_dir == custom_build_dir:
+            return
+
         if not self.grouped:
             link = os.path.join(
                 CFG.custom_scenery_dir,
@@ -1645,7 +1657,7 @@ class Ortho4XP_Earth_Preview(tk.Toplevel):
                 os.path.realpath(link), os.path.realpath(self.working_dir)
             ):
                 os.remove(link)
-                for (lat, lon) in self.dico_tiles_done:
+                for lat, lon in self.dico_tiles_done:
                     if not OsX:
                         self.canvas.itemconfig(
                             self.dico_tiles_done[(lat, lon)][0],
@@ -1691,8 +1703,8 @@ class Ortho4XP_Earth_Preview(tk.Toplevel):
 
     def set_working_dir(self):
         self.custom_build_dir = self.parent.custom_build_dir.get()
-        self.grouped = (
-            self.custom_build_dir and self.custom_build_dir[-1] != "/"
+        self.grouped = self.custom_build_dir and not self.custom_build_dir.endswith(
+            ("/", "\\")
         )
         self.working_dir = (
             self.custom_build_dir if self.custom_build_dir else FNAMES.Tile_dir
@@ -2026,13 +2038,13 @@ class Ortho4XP_Earth_Preview(tk.Toplevel):
     def delete_tile_whole(self, lat: int, lon: int) -> None:
         """Delete all tile data."""
         try:
-            self.remove_symlink(lat, lon)
             shutil.rmtree(FNAMES.build_dir(lat, lon, self.custom_build_dir))
             UI.vprint(
                 3,
                 "Tile (whole) removed for tile at " + str(lat) + str(lon),
             )
             if (lat, lon) in self.dico_tiles_done:
+                self.remove_symlink(lat, lon)
                 for objid in self.dico_tiles_done[(lat, lon)][:2]:
                     self.canvas.delete(objid)
                 del self.dico_tiles_done[(lat, lon)]
