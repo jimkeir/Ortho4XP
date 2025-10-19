@@ -1143,7 +1143,10 @@ class Ortho4XP_Config(tk.Toplevel):
                     f.write(var + "=" + self.v_[var].get() + "\n")
         self.load_tile_cfg()
         self.tile_cfg_status()
-        UI.vprint(1, f"Configuration saved for tile at {lat} {lon}")
+        UI.vprint(
+            1,
+            f"Configuration saved for tile at {self.parent.lat.get()} {self.parent.lon.get()}",
+        )
         return
 
     def reset_global_cfg(self) -> None:
