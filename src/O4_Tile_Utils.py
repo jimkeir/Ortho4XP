@@ -298,10 +298,27 @@ def build_all(tile):
         UI.exit_message_and_bottom_line("")
         return 0
     build_tile(tile)
+    tile_coords = FNAMES.short_latlon(tile.lat, tile.lon)
+    if tile_coords in IMG.incomplete_imgs:
+        UI.lvprint(
+            1,
+            f"Attempting to rebuild textures with white squares: {IMG.incomplete_imgs[tile_coords]}"
+        )
+        delete_incomplete_imgs(tile_coords)
+        build_tile(tile)
     if UI.red_flag:
         UI.exit_message_and_bottom_line("")
         return 0
     UI.is_working = 0
+    if IMG.incomplete_imgs:
+        UI.lvprint(
+            0,
+            (
+                "\nERROR: Parts of the following images could not be obtained "
+                "and have been filled with white: "
+                f"{IMG.incomplete_imgs}"
+            ),
+        )
     return 1
 
 ################################################################################
