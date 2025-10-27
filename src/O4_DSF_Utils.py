@@ -21,8 +21,6 @@ import O4_UI_Utils as UI
 quad_init_level = 3
 quad_capacity_high = 50000
 quad_capacity_low = 35000
-quad_capacity_custom = 100000
-quad_capacity_custom_list =[(30,-85)]
 
 # For Laminar test suite
 use_test_texture = False
@@ -78,7 +76,8 @@ class QuadTree(dict):
             if key in self:
                 break
             level += 1
-        if self[key]["size"] < self.bucket_size:
+        # Complex meshes can cause level to exceed 14, so we cap it
+        if self[key]["size"] < self.bucket_size or level >= 14:
             self[key]["idx_nodes"].add(self.last_node)
             self[key]["size"] += 1
             self.nodes[self.last_node] = (bx, by)
@@ -497,11 +496,9 @@ def build_dsf(tile, download_queue):
                             nbr_nodes, node_coords, node_types, tile)
     
     UI.vprint(1, "-> Computing point pools and texture requirements")
-    
+
     # 5 Compute quadtree
-    if (tile.lat,tile.lon) in quad_capacity_custom_list:
-        quad_capacity = quad_capacity_custom
-    elif (tile.use_masks_for_inland):
+    if tile.use_masks_for_inland:
         quad_capacity = quad_capacity_low
     else:
         quad_capacity = quad_capacity_high
