@@ -112,7 +112,7 @@ cfg_tile_vars = {
     "apt_smoothing_pix": {
         "type": int,
         "default": 8,
-        "hint": "How much gaussian blur is applied to the elevation raster for the look up of altitude over airports. Unit is the evelation raster pixel size.",
+        "hint": "How much gaussian blur is applied to the elevation raster for the look up of altitude over airports. Unit is the elevation raster pixel size.",
     },
     "road_level": {
         "type": int,

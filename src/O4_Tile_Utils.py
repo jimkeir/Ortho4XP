@@ -298,14 +298,15 @@ def build_all(tile):
         UI.exit_message_and_bottom_line("")
         return 0
     build_tile(tile)
-    tile_coords = FNAMES.short_latlon(tile.lat, tile.lon)
-    if tile_coords in IMG.incomplete_imgs:
-        UI.lvprint(
-            1,
-            f"Attempting to rebuild textures with white squares: {IMG.incomplete_imgs[tile_coords]}"
-        )
-        delete_incomplete_imgs(tile_coords)
-        build_tile(tile)
+    # tile_coords = FNAMES.short_latlon(tile.lat, tile.lon)
+    # if tile_coords in IMG.incomplete_imgs:
+    #     UI.lvprint(
+    #         1,
+    #         f"Attempting to rebuild textures with white squares: "
+    #         f"{IMG.incomplete_imgs[tile_coords]}",
+    #     )
+    #     delete_incomplete_imgs(tile_coords)
+    #     build_tile(tile)
     if UI.red_flag:
         UI.exit_message_and_bottom_line("")
         return 0
@@ -313,11 +314,8 @@ def build_all(tile):
     if IMG.incomplete_imgs:
         UI.lvprint(
             0,
-            (
-                "\nERROR: Parts of the following images could not be obtained "
-                "and have been filled with white: "
-                f"{IMG.incomplete_imgs}"
-            ),
+            f"\nERROR: Parts of the following images could not be obtained "
+            f"and have been filled with white: {IMG.incomplete_imgs}",
         )
     return 1
 
@@ -371,15 +369,16 @@ def build_tile_list(
                 UI.exit_message_and_bottom_line()
                 return 0
         if do_dsf:
-            tile_coords = FNAMES.short_latlon(lat, lon)
+            # tile_coords = FNAMES.short_latlon(lat, lon)
             build_tile(tile)
-            if tile_coords in IMG.incomplete_imgs:
-                UI.lvprint(
-                    1,
-                    f"Attempting to rebuild textures with white squares: {IMG.incomplete_imgs[tile_coords]}"
-                )
-                delete_incomplete_imgs(tile_coords)
-                build_tile(tile)
+            # if tile_coords in IMG.incomplete_imgs:
+            #     UI.lvprint(
+            #         1,
+            #         f"Attempting to rebuild textures with white squares: "
+            #         f"{IMG.incomplete_imgs[tile_coords]}",
+            #     )
+            #     delete_incomplete_imgs(tile_coords)
+            #     build_tile(tile)
             if UI.red_flag:
                 UI.exit_message_and_bottom_line()
                 return 0
@@ -401,11 +400,8 @@ def build_tile_list(
     if IMG.incomplete_imgs:
         UI.lvprint(
             0,
-            (
-                "\nERROR: Parts of the following images could not be obtained "
-                "and have been filled with white: "
-                f"{IMG.incomplete_imgs}"
-            ),
+            f"\nERROR: Parts of the following images could not be obtained "
+            f"and have been filled with white: {IMG.incomplete_imgs}",
         )
     return 1
 
@@ -443,6 +439,7 @@ def delete_incomplete_imgs(tile_coords):
                 file_path = os.path.join(root, file_name)
                 os.remove(file_path)
                 UI.lvprint(1, f"Deleted: {file_name}")
+                UI.logprint(f"Deleted incomplete image file: {file_name}")
 
         # Delete the tile dds textures with white squares
         # file_name has .jpg extension, so create a variable for .dds extension as well
@@ -454,5 +451,5 @@ def delete_incomplete_imgs(tile_coords):
                 file_path = os.path.join(root, file_name_dds)
                 os.remove(file_path)
                 UI.lvprint(1, f"Deleted: {file_name_dds}")
-    
+
     IMG.incomplete_imgs.pop(tile_coords, None)

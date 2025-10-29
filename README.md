@@ -39,7 +39,6 @@ The specific changes in this forked version:
 #### Miscellaneous
 * Automatically saves the same data (active tile, default provider, default zoom level and base folder) that the power button icon does when you close the application using the operating system close button.
 * Additional console messages addeded to provide more feedback. These are categorized with a verbosity setting of 1 (default).
-* Attempt to redownload images (only once) that were not properly downloaded (white squares) if using "All in one" or batch build.
 * "Part of image could not be obtained" error will now show a summary message at the end of a batch build or "All in one" if redownload was unsuccessful.
 * Minor visual tweaks which included moving the "Refresh" and "Exit" buttons to the bottom of the left side in the Tiles collection and management window to better illustrate the "Refresh" button is not tied to Batch Build only.
 * Includes Windows Python dependency wheel files for gdal and scikit-fmm.
