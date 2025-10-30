@@ -39,19 +39,18 @@ The specific changes in this forked version:
 #### Miscellaneous
 * Automatically saves the same data (active tile, default provider, default zoom level and base folder) that the power button icon does when you close the application using the operating system close button.
 * Additional console messages addeded to provide more feedback. These are categorized with a verbosity setting of 1 (default).
-* Attempt to redownload images (only once) that were not properly downloaded (white squares).
-* "Part of image could not be obtained" error will now show a summary message at the end of a batch build if redownload was unsuccessful.
+* Attempt to redownload images (only once) that were not properly downloaded (white squares) if using "All in one" or batch build.
+* "Part of image could not be obtained" error will now show a summary message at the end of a batch build or "All in one" if redownload was unsuccessful.
 * Minor visual tweaks which included moving the "Refresh" and "Exit" buttons to the bottom of the left side in the Tiles collection and management window to better illustrate the "Refresh" button is not tied to Batch Build only.
-* Update Python to 3.13.7.
 * Includes Windows Python dependency wheel files for gdal and scikit-fmm.
-* Update and pin requirements to latest working versions.
+* Updated Python and pin requirements to latest working versions.
 * Adds a bash script to automate the setup process for those that prefer not to use the packaged version.
 * Removed Maxar and Mapbox image providers which are no longer publically available.
 * Removed unavailable OSM FR, updated/added RU and JP overpass servers.
-* Include 7-zip executable for macOS.
+* Include 7-zip executable for Mac.
 * Update EOX url template and deleted the broken EOX2.lay file. @A346fan
-* Update nvcompress to macOS universal binary. @w8sl
 * Updated Windows & Linux nvcompress to latest version. @tlinkin
+* Use DDSTool instead of nvcompress for Mac.
 * Update DFSTool to latest version 24-5.
 * Removed unused tools.
 
@@ -68,7 +67,7 @@ The specific changes in this forked version:
 * Fixed a bug with random OSM server selection not working correctly.
 * Include recompiled version of Triangle4XP.exe with MinGW-GCC for Windows users to resolve an [issue](https://github.com/oscarpilote/Ortho4XP/issues/282).
 * Fixed a bug when using manually installed dem files were not being used on certain tiles.
-* Work around for certain tiles (+30-085) with complex meshes that fail to build.
+* Fixed a bug and improved handling of complex meshes (e.g., +30-085) that would cause the build process to get stuck.
 * Fixed and improved automatically trying a lower `min_angle` value when the current value fails.
 * Reverted to previous triangle.exe to fix issues with creation of extent masks and certain providers.
 

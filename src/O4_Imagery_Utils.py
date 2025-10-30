@@ -60,7 +60,7 @@ request_headers_generic = {
 
 if "dar" in sys.platform:
     dds_convert_cmd = os.path.join(
-        FNAMES.resource_path("Utils"), "mac", "nvcompress"
+        FNAMES.resource_path("Utils"), "mac", "DDSTool"
     )
     gdal_transl_cmd = "gdal_translate"
     gdalwarp_cmd = "gdalwarp"
@@ -2440,23 +2440,39 @@ def convert_texture(
     # eventually the dds conversion
     if type == "dds":
         if not dxt5:
-            conv_cmd = [
-                dds_convert_cmd,
-                "-bc1",
-                "-fast",
-                file_to_convert,
-                os.path.join(tile.build_dir, "textures", out_file_name),
-                devnull_rdir,
-            ]
+            if "dar" in sys.platform:
+                conv_cmd = [
+                    dds_convert_cmd,
+                    "--png2dxt1",
+                    file_to_convert,
+                    os.path.join(tile.build_dir, "textures", out_file_name)
+                ]
+            else:
+                conv_cmd = [
+                    dds_convert_cmd,
+                    "-bc1",
+                    "-fast",
+                    file_to_convert,
+                    os.path.join(tile.build_dir, "textures", out_file_name),
+                    devnull_rdir,
+                ]
         else:
-            conv_cmd = [
-                dds_convert_cmd,
-                "-bc3",
-                "-fast",
-                file_to_convert,
-                os.path.join(tile.build_dir, "textures", out_file_name),
-                devnull_rdir,
-            ]
+            if "dar" in sys.platform:
+                conv_cmd = [
+                    dds_convert_cmd,
+                    "--png2dxt5",
+                    file_to_convert,
+                    os.path.join(tile.build_dir, "textures", out_file_name)
+                ]
+            else:
+                conv_cmd = [
+                    dds_convert_cmd,
+                    "-bc3",
+                    "-fast",
+                    file_to_convert,
+                    os.path.join(tile.build_dir, "textures", out_file_name),
+                    devnull_rdir,
+                ]
     else:
         (latmax, lonmin) = GEO.gtile_to_wgs84(til_x_left, til_y_top, zoomlevel)
         (latmin, lonmax) = GEO.gtile_to_wgs84(

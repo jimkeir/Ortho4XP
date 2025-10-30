@@ -1,41 +1,44 @@
-""""Ortho4XP configuration window."""
+"""Ortho4XP configuration window."""
 
 import ast
 import logging
 import os
 from math import ceil
+
 import tkinter as tk
 import tkinter.ttk as ttk
-from tkinter import N, S, E, W, filedialog, messagebox
+from tkinter import E, N, S, W, filedialog, messagebox
+
+import O4_Cfg_Vars as CFG
+import O4_DEM_Utils as DEM
+import O4_File_Names as FNAMES
+import O4_Imagery_Utils as IMG
+import O4_OSM_Utils as OSM
+import O4_Overlay_Utils as OVL
+import O4_Tile_Utils as TILE
+import O4_UI_Utils as UI
+import O4_Vector_Map as VMAP
 from O4_Cfg_Vars import (
     cfg_app_vars,
     cfg_global_tile_vars,
     cfg_tile_vars,
     cfg_vars,
-    gui_app_vars_short,
+    global_prefix,
     gui_app_vars_long,
+    gui_app_vars_short,
     list_app_vars,
     list_cfg_vars,
+    list_dsf_vars,
+    list_global_dsf_vars,
+    list_global_mask_vars,
+    list_global_mesh_vars,
     list_global_tile_vars,
     list_global_vector_vars,
-    list_global_mesh_vars,
-    list_global_mask_vars,
-    list_global_dsf_vars,
+    list_mask_vars,
+    list_mesh_vars,
     list_tile_vars,
     list_vector_vars,
-    list_mesh_vars,
-    list_mask_vars,
-    list_dsf_vars,
-    global_prefix,
 )
-import O4_File_Names as FNAMES
-import O4_UI_Utils as UI
-import O4_DEM_Utils as DEM
-import O4_OSM_Utils as OSM
-import O4_Vector_Map as VMAP
-import O4_Imagery_Utils as IMG
-import O4_Tile_Utils as TILE
-import O4_Overlay_Utils as OVL
 
 _LOGGER = logging.getLogger(__name__)
 _LOGGER.setLevel(logging.INFO)
@@ -1143,7 +1146,10 @@ class Ortho4XP_Config(tk.Toplevel):
                     f.write(var + "=" + self.v_[var].get() + "\n")
         self.load_tile_cfg()
         self.tile_cfg_status()
-        UI.vprint(1, f"Configuration saved for tile at {lat} {lon}")
+        UI.vprint(
+            1,
+            f"Configuration saved for tile at {self.parent.lat.get()} {self.parent.lon.get()}",
+        )
         return
 
     def reset_global_cfg(self) -> None:
@@ -1413,7 +1419,12 @@ class Ortho4XP_Config(tk.Toplevel):
                     if var == "zone_list":
                         continue
                     tab_value = self.set_value_type(var, self.v_[var].get())
-                    file_value = self.set_value_type(var, file_dict[var])
+                    if var not in file_dict:
+                        UI.lvprint(
+                            1,
+                            f"Setting {var} is missing from config, setting default value: {tab_value}",
+                        )
+                    file_value = self.set_value_type(var, file_dict.get(var, tab_value))
 
                     # Compare tab_value with value in file_dict
                     if file_value != tab_value:
@@ -1435,9 +1446,13 @@ class Ortho4XP_Config(tk.Toplevel):
                     for var in list_global_tile_vars:
                         # Config file doesn't have global_ prefix so we need to remove it
                         _var = var.replace(global_prefix, "")
-
                         tab_value = self.set_value_type(_var, self.v_[_var].get())
-                        file_value = self.set_value_type(_var, file_dict[_var])
+                        if _var not in file_dict:
+                            UI.lvprint(
+                                1,
+                                f"Setting {_var} is missing from config, setting default value: {tab_value}",
+                            )
+                        file_value = self.set_value_type(_var, file_dict.get(_var, tab_value))
 
                         if file_value != tab_value:
                             _LOGGER.debug(
@@ -1464,9 +1479,13 @@ class Ortho4XP_Config(tk.Toplevel):
                     for var in list_global_tile_vars:
                         # Config file does not have global_ prefix so we need to remove it
                         _var = var.replace(global_prefix, "")
-
                         tab_value = self.set_value_type(_var, self.v_[var].get())
-                        file_value = self.set_value_type(_var, file_dict[_var])
+                        if _var not in file_dict:
+                            UI.lvprint(
+                                1,
+                                f"Setting {_var} is missing from config, setting default value: {tab_value}",
+                            )
+                        file_value = self.set_value_type(_var, file_dict.get(_var, tab_value))
 
                         if file_value != tab_value:
                             _LOGGER.debug(
@@ -1480,7 +1499,12 @@ class Ortho4XP_Config(tk.Toplevel):
                     # Check App Config tab values against the global config file
                     for var in list_app_vars:
                         tab_value = self.set_value_type(var, self.v_[var].get())
-                        file_value = self.set_value_type(var, file_dict[var])
+                        if var not in file_dict:
+                            UI.lvprint(
+                                1,
+                                f"Setting {var} is missing from config, setting default value: {tab_value}",
+                            )
+                        file_value = self.set_value_type(var, file_dict.get(var, tab_value))
 
                         if file_value != tab_value:
                             _LOGGER.debug(

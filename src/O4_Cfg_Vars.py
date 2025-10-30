@@ -44,7 +44,7 @@ cfg_app_vars = {
         "module": "TILE",
         "type": int,
         "default": 1,
-        "hint": "Number of parallel threads pulling from the download queue. Increase to speed up imagery downloads when your network and provider allow more concurrent requests. If running Ortho4XP from an external drive, errors may occur if set to higher than 4.",
+        "hint": "Each orthophoto being constructed uses 16 threads for network requests by default (unless specified otherwise in the provider file). This setting allows multiple orthophotos to be constructed in parallel, meaning increasing it to 2 will result in 32 threads for request across. If running Ortho4XP from an external drive, errors may occur at settings higher than 4.",
     },
     "max_convert_slots": {
         "module": "TILE",
@@ -112,7 +112,7 @@ cfg_tile_vars = {
     "apt_smoothing_pix": {
         "type": int,
         "default": 8,
-        "hint": "How much gaussian blur is applied to the elevation raster for the look up of altitude over airports. Unit is the evelation raster pixel size.",
+        "hint": "How much gaussian blur is applied to the elevation raster for the look up of altitude over airports. Unit is the elevation raster pixel size.",
     },
     "road_level": {
         "type": int,

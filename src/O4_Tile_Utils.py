@@ -298,10 +298,25 @@ def build_all(tile):
         UI.exit_message_and_bottom_line("")
         return 0
     build_tile(tile)
+    tile_coords = FNAMES.short_latlon(tile.lat, tile.lon)
+    if tile_coords in IMG.incomplete_imgs:
+        UI.lvprint(
+            1,
+            f"Attempting to rebuild textures with white squares: "
+            f"{IMG.incomplete_imgs[tile_coords]}",
+        )
+        delete_incomplete_imgs(tile)
+        build_tile(tile)
     if UI.red_flag:
         UI.exit_message_and_bottom_line("")
         return 0
     UI.is_working = 0
+    if IMG.incomplete_imgs:
+        UI.lvprint(
+            0,
+            f"\nERROR: Parts of the following images could not be obtained "
+            f"and have been filled with white: {IMG.incomplete_imgs}",
+        )
     return 1
 
 ################################################################################
@@ -359,9 +374,10 @@ def build_tile_list(
             if tile_coords in IMG.incomplete_imgs:
                 UI.lvprint(
                     1,
-                    f"Attempting to rebuild textures with white squares: {IMG.incomplete_imgs[tile_coords]}"
+                    f"Attempting to rebuild textures with white squares: "
+                    f"{IMG.incomplete_imgs[tile_coords]}",
                 )
-                delete_incomplete_imgs(tile_coords)
+                delete_incomplete_imgs(tile)
                 build_tile(tile)
             if UI.red_flag:
                 UI.exit_message_and_bottom_line()
@@ -384,11 +400,8 @@ def build_tile_list(
     if IMG.incomplete_imgs:
         UI.lvprint(
             0,
-            (
-                "\nERROR: Parts of the following images could not be obtained "
-                "and have been filled with white: "
-                f"{IMG.incomplete_imgs}"
-            ),
+            f"\nERROR: Parts of the following images could not be obtained "
+            f"and have been filled with white: {IMG.incomplete_imgs}",
         )
     return 1
 
@@ -414,28 +427,28 @@ def remove_unwanted_textures(tile):
             except:
                 pass
 
-def delete_incomplete_imgs(tile_coords):
+def delete_incomplete_imgs(tile):
     """Delete orthophoto jpegs and dds that have white squares."""
+    tile_coords = FNAMES.short_latlon(tile.lat, tile.lon)
     if tile_coords not in IMG.incomplete_imgs:
         return
-    file_name_list = IMG.incomplete_imgs[tile_coords]    
+    file_name_list = IMG.incomplete_imgs[tile_coords]
     for file_name in file_name_list:
         # Delete the orthophoto jpegs with white squares
         for root, _, files in os.walk(FNAMES.Imagery_dir):
             if file_name in files:
                 file_path = os.path.join(root, file_name)
                 os.remove(file_path)
-                UI.lvprint(1, f"Deleted: {file_name}")
+                UI.lvprint(1, f"Deleted: {file_name} in {file_path}")
 
         # Delete the tile dds textures with white squares
         # file_name has .jpg extension, so create a variable for .dds extension as well
         base_name, _ = os.path.splitext(file_name)
         file_name_dds = f"{base_name}.dds"
-
-        for root, _, files in os.walk(FNAMES.Tile_dir):
+        for root, _, files in os.walk(tile.build_dir):
             if file_name_dds in files:
                 file_path = os.path.join(root, file_name_dds)
                 os.remove(file_path)
-                UI.lvprint(1, f"Deleted: {file_name_dds}")
-    
+                UI.lvprint(1, f"Deleted: {file_name_dds} in {file_path}")
+
     IMG.incomplete_imgs.pop(tile_coords, None)
