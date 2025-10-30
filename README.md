@@ -47,10 +47,10 @@ The specific changes in this forked version:
 * Adds a bash script to automate the setup process for those that prefer not to use the packaged version.
 * Removed Maxar and Mapbox image providers which are no longer publically available.
 * Removed unavailable OSM FR, updated/added RU and JP overpass servers.
-* Include 7-zip executable for macOS.
+* Include 7-zip executable for Mac.
 * Update EOX url template and deleted the broken EOX2.lay file. @A346fan
-* Update nvcompress to macOS universal binary. @w8sl
 * Updated Windows & Linux nvcompress to latest version. @tlinkin
+* Use DDSTool instead of nvcompress for Mac.
 * Update DFSTool to latest version 24-5.
 * Removed unused tools.
 
