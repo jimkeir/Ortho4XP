@@ -51,6 +51,14 @@ _LOGGER.addHandler(handler)
 # are on Linux or Windows.
 OsX = "dar" in sys.platform
 
+if "win" in sys.platform:
+    import ctypes
+    from ctypes import wintypes
+    shlwapi = ctypes.WinDLL('shlwapi.dll')
+    PathIsNetworkPath = shlwapi.PathIsNetworkPathA
+    PathIsNetworkPath.argtypes = [wintypes.LPCSTR]
+    PathIsNetworkPath.restype = wintypes.BOOL
+
 ################################################################################
 class Ortho4XP_GUI(tk.Tk):
 
@@ -1595,7 +1603,10 @@ class Ortho4XP_Earth_Preview(tk.Toplevel):
             # Mac and Linux
             os.system("ln -s " + ' "' + target + '" "' + link + '"')
         else:
-            os.system('MKLINK /J "' + link + '" "' + target + '"')
+            if PathIsNetworkPath(target.encode('utf-8')):
+                os.system('MKLINK /D "' + link + '" "' + target + '"')
+            else:
+                os.system('MKLINK /J "' + link + '" "' + target + '"')
         if not self.grouped:
             if not OsX:
                 self.canvas.itemconfig(
@@ -1696,7 +1707,10 @@ class Ortho4XP_Earth_Preview(tk.Toplevel):
             # Mac and Linux
             os.system("ln -s " + ' "' + FNAMES.Overlay_dir + '" "' + link + '"')
         else:
-            os.system('MKLINK /J "' + link + '" "' + FNAMES.Overlay_dir + '"')
+            if PathIsNetworkPath(FNAMES.Overlay_dir.encode('utf-8')):
+                os.system('MKLINK /D "' + link + '" "' + FNAMES.Overlay_dir + '"')
+            else:
+                os.system('MKLINK /J "' + link + '" "' + FNAMES.Overlay_dir + '"')
         UI.vprint(
             1, f"yOrtho4XP_Overlays link added to: {CFG.custom_scenery_dir}"
         )
