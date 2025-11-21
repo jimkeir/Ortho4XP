@@ -75,10 +75,21 @@ class OSM_layer:
                     osm_file_name,
                     "for reading (corrupted ?).",
                 )
-                return 0
+                return False
         elif isinstance(osm_input, bytes):
             pfile = io.StringIO(osm_input.decode(encoding="utf-8"))
-        first_line = pfile.readline()
+        
+        try:
+            first_line = pfile.readline()
+        except:
+            UI.vprint(
+                1,
+                "    Could not read",
+                osm_file_name,
+                "for reading (corrupted ?).",
+            )
+            return False
+
         if "<osm " not in first_line:
             first_line = pfile.readline()
         separator = "'" if "'" in first_line else '"'
@@ -270,7 +281,7 @@ class OSM_layer:
                 "ERROR: OSM overpass server answer was corrupted ",
                 "(no ending </OSM> tag)",
             )
-            return 0
+            return False
         UI.vprint(
             2,
             "      A total of "
@@ -281,7 +292,7 @@ class OSM_layer:
             + str(len(self.dicosmfirst["r"]) - initrels)
             + " new relation(s).",
         )
-        return 1
+        return True
 
     def write_to_file(self, filename):
         try:
@@ -424,19 +435,22 @@ def OSM_queries_to_OSM_layer(
     cached_data_filename = FNAMES.osm_cached(lat, lon, cached_suffix)
     if cached_suffix and os.path.isfile(cached_data_filename):
         UI.vprint(1, "    * Recycling OSM data from", cached_data_filename)
-        return osm_layer.update_dicosm(
+        if osm_layer.update_dicosm(
             cached_data_filename, input_tags, target_tags
-        )
+        ):
+            return 1
+
     for query in queries:
         # look first for cached data (old scheme)
         if isinstance(query, str):
             old_cached_data_filename = FNAMES.osm_old_cached(lat, lon, query)
             if os.path.isfile(old_cached_data_filename):
                 UI.vprint(1, "    * Recycling OSM data for", query)
-                osm_layer.update_dicosm(
+                if osm_layer.update_dicosm(
                     old_cached_data_filename, input_tags, target_tags
-                )
-                continue
+                ):
+                    continue
+
         UI.vprint(1, "    * Downloading OSM data for", query)
         response = get_overpass_data(
             query, (lat, lon, lat + 1, lon + 1), server_code
@@ -458,7 +472,9 @@ def OSM_queries_to_OSM_layer(
                 ", skipping it.",
             )
             return 0
-        osm_layer.update_dicosm(response, input_tags, target_tags)
+        if not osm_layer.update_dicosm(response, input_tags, target_tags):
+            cached_suffix = None
+
     if cached_suffix:
         osm_layer.write_to_file(cached_data_filename)
     return 1
@@ -489,10 +505,13 @@ def OSM_query_to_OSM_layer(
                 target_tags[osm_type].append((tag, ""))
             else:
                 target_tags[osm_type].append(tag)
+
+    need_download = True
     if cached_file_name and os.path.isfile(cached_file_name):
         UI.vprint(1, "    * Recycling OSM data from", cached_file_name)
-        osm_layer.update_dicosm(cached_file_name, input_tags, target_tags)
-    else:
+        need_download = not osm_layer.update_dicosm(cached_file_name, input_tags, target_tags)
+
+    if need_download:
         response = get_overpass_data(query, bbox, server_code)
         if UI.red_flag:
             return 0
@@ -506,9 +525,9 @@ def OSM_query_to_OSM_layer(
                 ", skipping it.",
             )
             return 0
-        osm_layer.update_dicosm(response, input_tags, target_tags)
-        if cached_file_name:
-            osm_layer.write_to_file(cached_file_name)
+        if osm_layer.update_dicosm(response, input_tags, target_tags):
+            if cached_file_name:
+                osm_layer.write_to_file(cached_file_name)
     return 1
 
 ################################################################################
